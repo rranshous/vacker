@@ -86,8 +86,7 @@ module Expirement::Mongo
     end
 
     def value_for_key id, key
-      # TODO: not pull back all data
-      @@collection.find_one(bson(id))[key.to_s]
+      @@collection.find_one(bson(id), {fields: [key]})[key.to_s]
     end
 
     def set_sub_key id, top_key, sub_key, value
