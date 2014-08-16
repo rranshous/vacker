@@ -1,4 +1,3 @@
-require 'json'
 require 'goliath'
 require_relative '../lib/expirement'
 require_relative '../lib/api_endpoint'
