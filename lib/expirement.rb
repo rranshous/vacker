@@ -11,6 +11,7 @@ class Expirement
 
   def update_result key, value
     @result[key] = value
+    self
   end
 
   def append_log msg
@@ -26,7 +27,8 @@ class Expirement
       'invarients' => invarients,
       'varients' => varients,
       'result' => result,
-      'log' => log
+      'log' => log,
+      'artifacts' => artifacts
     }
   end
 end
