@@ -9,6 +9,7 @@ class ExpirementGet < ApiEndpoint
   use Goliath::Rack::Validation::RequiredParam, { key: 'id' }
 
   def response(env)
+    puts "PARAMS: #{env['params']}"
     expirement = Expirement.find self.class.id(env)
     return json_response(expirement) if expirement
     return error_response(404)

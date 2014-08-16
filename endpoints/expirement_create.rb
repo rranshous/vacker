@@ -9,8 +9,9 @@ class ExpirementCreate < ApiEndpoint
   use Goliath::Rack::Validation::RequestMethod, ['GET','POST']
 
   def response(env)
-    expirement = Expirement.new self.class.invarients(env),
-                                self.class.varients(env)
+    puts "PARAMS: #{env['params']}"
+    expirement = Expirement.create self.class.invarients(env),
+                                   self.class.varients(env)
     json_response(expirement)
   end
 

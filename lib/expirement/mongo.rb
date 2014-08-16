@@ -16,7 +16,7 @@ module Expirement::Mongo
   end
 
   def update_result key, value
-    self.class.set_sub_key @id, key, value
+    self.class.set_sub_key @id, :result, key, value
     self
   end
 
@@ -52,7 +52,8 @@ module Expirement::Mongo
 
   def to_hash
     doc = self.class.doc_for @id
-    { 'invarients' => doc['invarients'] || {},
+    { 'id' => doc['_id'].to_s,
+      'invarients' => doc['invarients'] || {},
       'varients' => doc['varients'] || {},
       'result' => doc['result'] || {},
       'log' => doc['log'] || [],
@@ -60,53 +61,67 @@ module Expirement::Mongo
   end
 
   module ClassMethods
+
     def bind mongo
-      @@collection = mongo.collection 'expirement'
+      @@collection = mongo.collection :expirements
     end
 
     def find id
       doc = doc_for id
+      puts "FIND DOC: #{doc}"
       unless doc.nil?
         return self.new(doc['_id'])
       end
       nil
     end
 
+    def all
+      @@collection.find().to_a.map { |d| new d['_id'] }
+    end
+
     def create invarients={}, varients={}
-      id = @@collection.insert({ 'invarients' => invarients,
-                                 'varients' => varients })
+      id = @@collection.insert({ :invarients => invarients,
+                                 :varients => varients })
       self.new id
     end
 
     def value_for_key id, key
-      @@collection.find_one({ _id: id })[key.to_s]
+      # TODO: not pull back all data
+      @@collection.find_one(bson(id))[key.to_s]
     end
 
     def set_sub_key id, top_key, sub_key, value
       @@collection.update({"_id" => id},
                           { "$set" =>
-                            { top_key => { sub_key => value }}})
+                            { "#{top_key}.#{sub_key}" => value }})
+    end
+
+    def update_result key, value
+      @@collection.update({ :_id => id}, {"$set" => {key => value}})
     end
 
     def push id, key, value
-      @@collection.update({ _id: id}, { "$push" => { key => value }})
+      @@collection.update(bson(id), { "$push" => { key => value }})
     end
 
     def doc_for id
-      @@collection.find_one({ _id: id })
+      puts "FINDING: #{id}"
+      @@collection.find_one(bson(id))
+    end
+
+    def bson id
+      { :_id => BSON::ObjectId(id.to_s) }
     end
 
   end
 
-  def update_result key, value
-    @@collection.update({ _id: id}, {"$set" => {key => value}})
-  end
 
   private
 
   def self.prepended klass
     klass.instance_eval do
       extend Expirement::Mongo::ClassMethods
+      attr_reader :id
     end
   end
 end

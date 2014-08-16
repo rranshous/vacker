@@ -2,6 +2,10 @@ class Expirement
   attr_reader :invarients, :varients, :result, :log, :artifacts
 
   def initialize invarients={}, varients={}
+    create invarients, varients
+  end
+
+  def create invarients={}, varients={}
     @invarients = invarients
     @varients = varients
     @result = {}
