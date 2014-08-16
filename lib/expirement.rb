@@ -20,4 +20,13 @@ class Expirement
   def append_artifact data
     @artifacts << data
   end
+
+  def to_hash
+    {
+      'invarients' => invarients,
+      'varients' => varients,
+      'result' => result,
+      'log' => log
+    }
+  end
 end
