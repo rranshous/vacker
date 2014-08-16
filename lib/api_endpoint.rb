@@ -5,6 +5,7 @@ class ApiEndpoint < Goliath::API
     use Goliath::Rack::Formatters::JSON
     use Goliath::Rack::Render
     use Goliath::Rack::Heartbeat
+    use Goliath::Rack::Validation::RequiredParam, { key: 'v' }
   end
 
   def json_response data
