@@ -7,22 +7,9 @@ class ExpirementUpdateResult < ExpirementEndpoint
   require_params 'id', 'key', 'value'
 
   def response(env)
-    expirement = Expirement.find self.class.id(env)
-    expirement.update_result self.class.key(env), self.class.value(env)
+    params = params_for env
+    expirement = Expirement.find params.id
+    expirement.update_result params.key, params.value
     json_response(expirement)
-  end
-
-  private
-
-  def self.key env
-    env['params']['key']
-  end
-
-  def self.value env
-    env['params']['value']
-  end
-
-  def self.id env
-    env['params']['id']
   end
 end

@@ -1,4 +1,6 @@
 require 'goliath'
+require 'ostruct'
+
 class ApiEndpoint < Goliath::API
 
   def self.use_defaults
@@ -17,5 +19,9 @@ class ApiEndpoint < Goliath::API
 
   def error_response code
     [code.to_s, {'Content-Type' => 'application/json'}, {}]
+  end
+
+  def params_for env
+    OpenStruct.new env['params'] || {}
   end
 end

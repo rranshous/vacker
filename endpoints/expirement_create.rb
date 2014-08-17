@@ -1,26 +1,13 @@
-require 'goliath'
 require_relative '../lib/expirement'
-require_relative '../lib/api_endpoint'
+require_relative '../lib/expirement_endpoint'
 
-class ExpirementCreate < ApiEndpoint
+class ExpirementCreate < ExpirementEndpoint
 
   use_defaults
-  use Goliath::Rack::Validation::RequestMethod, ['GET','POST']
 
   def response(env)
-    puts "PARAMS: #{env['params']}"
-    expirement = Expirement.create self.class.invarients(env),
-                                   self.class.varients(env)
+    params = params_for env
+    expirement = Expirement.create params.invarients, params.varients
     json_response(expirement)
-  end
-
-  private
-
-  def self.invarients env
-    JSON.parse(env['params']['invarients'] || '{}')
-  end
-
-  def self.varients env
-    JSON.parse(env['params']['varients'] || '{}')
   end
 end
