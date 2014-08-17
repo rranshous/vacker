@@ -24,4 +24,8 @@ class ApiEndpoint < Goliath::API
   def params_for env
     OpenStruct.new env['params'] || {}
   end
+
+  def path
+    path = env['REQUEST_PATH']
+  end
 end
