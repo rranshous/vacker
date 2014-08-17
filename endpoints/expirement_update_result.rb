@@ -1,14 +1,10 @@
-require 'goliath'
 require_relative '../lib/expirement'
-require_relative '../lib/api_endpoint'
+require_relative '../lib/expirement_endpoint'
 
-class ExpirementUpdateResult < ApiEndpoint
+class ExpirementUpdateResult < ExpirementEndpoint
 
   use_defaults
-  use Goliath::Rack::Validation::RequestMethod, ['GET','POST']
-  use Goliath::Rack::Validation::RequiredParam, { key: 'id' }
-  use Goliath::Rack::Validation::RequiredParam, { key: 'key' }
-  use Goliath::Rack::Validation::RequiredParam, { key: 'value' }
+  require_params 'id', 'key', 'value'
 
   def response(env)
     expirement = Expirement.find self.class.id(env)

@@ -1,4 +1,6 @@
+require 'goliath'
 class ApiEndpoint < Goliath::API
+
   def self.use_defaults
     use Goliath::Rack::Params
     use Goliath::Rack::DefaultMimeType

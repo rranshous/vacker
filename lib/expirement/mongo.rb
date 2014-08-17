@@ -104,7 +104,6 @@ module Expirement::Mongo
     end
 
     def doc_for id
-      puts "FINDING: #{id}"
       @@collection.find_one(bson(id))
     end
 
